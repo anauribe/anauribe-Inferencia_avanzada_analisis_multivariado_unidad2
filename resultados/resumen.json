@@ -6,7 +6,8 @@
     "n_items": 32
   },
   "mardia": {
-    "asimetria_b1p": 62.27,
+    "asimetria_b1p": 0.2121,
+    "z_asimetria": 0.34,
     "curtosis_b2p": 1131.66,
     "curtosis_esperada": 1088,
     "z_curtosis": 13.93,
@@ -49,19 +50,39 @@
   },
   "comparacion_k": [
     {
+      "k": 3,
+      "var_acumulada_%": 25.7,
+      "items_carga_>=.40": 16,
+      "items_retenidos": 16,
+      "factores_con_<3_items": 0
+    },
+    {
+      "k": 4,
+      "var_acumulada_%": 30.4,
+      "items_carga_>=.40": 20,
+      "items_retenidos": 18,
+      "factores_con_<3_items": 0
+    },
+    {
       "k": 5,
       "var_acumulada_%": 34.7,
-      "items_carga_>=.40": 21
+      "items_carga_>=.40": 21,
+      "items_retenidos": 18,
+      "factores_con_<3_items": 1
     },
     {
       "k": 6,
       "var_acumulada_%": 38.6,
-      "items_carga_>=.40": 20
+      "items_carga_>=.40": 20,
+      "items_retenidos": 20,
+      "factores_con_<3_items": 1
     },
     {
       "k": 7,
       "var_acumulada_%": 41.7,
-      "items_carga_>=.40": 22
+      "items_carga_>=.40": 22,
+      "items_retenidos": 22,
+      "factores_con_<3_items": 2
     }
   ],
   "afe_inicial": {
@@ -83,6 +104,14 @@
       "Socializar con amigos",
       "Mascotas"
     ]
+  },
+  "reverificacion_criterio": {
+    "items_que_ya_no_cumplen": [
+      "Computación (software/hardware)",
+      "Actividades al aire libre"
+    ],
+    "cruzada_maxima": 0.338,
+    "item_cruzada_maxima": "Lectura de poesía"
   },
   "afe_final": {
     "n_items": 20,
@@ -143,7 +172,7 @@
       0.065,
       0.075
     ],
-    "SRMR": 0.067,
+    "SRMR": 0.07,
     "RMSEA_nulo": 0.163,
     "r_media_abs": 0.128
   },
@@ -159,7 +188,7 @@
       0.061,
       0.072
     ],
-    "SRMR": 0.062,
+    "SRMR": 0.065,
     "RMSEA_nulo": 0.176,
     "r_media_abs": 0.134
   },
@@ -167,7 +196,7 @@
     "Se elimina 'Actividades al aire libre' (carga M1 = 0.29)",
     "Se elimina 'Tocar instrumentos musicales' (carga M1 = 0.37)",
     "Se conserva 'Computación (software/hardware)' (carga M1 = 0.39) para mantener 3 indicadores en 'Ciencias exactas y tecnología'",
-    "Covarianza de errores Computación (software/hardware) ~~ Autos (residuo M1 = 0.30)"
+    "Covarianza de errores Computación (software/hardware) ~~ Autos (residuo M1 = 0.295)"
   ],
   "afc_M2_covarianza_errores": [
     {
@@ -178,5 +207,45 @@
       "p-value": 4.440892098500626e-16
     }
   ],
-  "genero_n_validos": 883
+  "genero_n_validos": 883,
+  "validacion_cruzada": [
+    {
+      "muestra": "Mitad 1",
+      "items": 18,
+      "n": 443,
+      "chi2": 345.38,
+      "gl": 119,
+      "p": 0.0,
+      "chi2_gl": 2.9,
+      "CFI": 0.889,
+      "TLI": 0.858,
+      "RMSEA": 0.066,
+      "RMSEA_IC90": [
+        0.058,
+        0.074
+      ],
+      "SRMR": 0.066,
+      "RMSEA_nulo": 0.174,
+      "r_media_abs": 0.131
+    },
+    {
+      "muestra": "Mitad 2",
+      "items": 18,
+      "n": 443,
+      "chi2": 362.44,
+      "gl": 119,
+      "p": 0.0,
+      "chi2_gl": 3.05,
+      "CFI": 0.889,
+      "TLI": 0.858,
+      "RMSEA": 0.068,
+      "RMSEA_IC90": [
+        0.06,
+        0.076
+      ],
+      "SRMR": 0.072,
+      "RMSEA_nulo": 0.18,
+      "r_media_abs": 0.144
+    }
+  ]
 }

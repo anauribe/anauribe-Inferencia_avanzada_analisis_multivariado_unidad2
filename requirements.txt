@@ -1,10 +1,15 @@
-pandas
-numpy
-scipy
-matplotlib
-scikit-learn
-factor_analyzer
-semopy
-reportlab
-markdown-it-py
-pillow
+# Versiones fijadas con las que se genero resultados/ y Informe_APA.pdf (AUDITORIA m7).
+# Sin fijar, no se sabe con que API se produjo el analisis: factor_analyzer interactua con
+# scikit-learn mediante un argumento renombrado (force_all_finite -> ensure_all_finite),
+# y semopy 2.3.11 ya no expone SRMR en calc_stats, lo que obliga al calculo manual.
+# Para actualizar: cambiar las versiones y volver a correr ambos scripts.
+pandas==2.2.2
+numpy==2.4.6
+scipy==1.17.1
+matplotlib==3.10.0
+scikit-learn==1.7.1
+factor_analyzer==0.5.1
+semopy==2.3.11
+reportlab==4.4.1
+markdown-it-py==3.0.0
+pillow==12.3.0

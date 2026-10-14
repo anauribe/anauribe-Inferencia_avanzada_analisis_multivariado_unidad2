@@ -1,4 +1,6 @@
-﻿k,var_acumulada_%,items_carga_>=.40
-5,34.7,21
-6,38.6,20
-7,41.7,22
+﻿k,var_acumulada_%,items_carga_>=.40,items_retenidos,factores_con_<3_items
+3,25.7,16,16,0
+4,30.4,20,18,0
+5,34.7,21,18,1
+6,38.6,20,20,1
+7,41.7,22,22,2

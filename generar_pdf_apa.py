@@ -80,12 +80,19 @@ for rutas in CANDIDATAS:
         registerFontFamily("APA", normal="APA", bold="APA-B", italic="APA-I", boldItalic="APA-BI")
         FUENTE = "APA"
         break
+# AUDITORIA M11: antes se imprimia un aviso y se continuaba con "Times-Roman", cuya
+# codificacion WinAnsi NO incluye chi, lambda, alfa, raiz, <= ni >=. El informe los usa de
+# forma masiva (chi-cuadrado, raiz(AVE) en el encabezado de la Tabla 7, <= y >= en el
+# criterio de la Tabla 5), de modo que el PDF salia silenciosamente degradado y el script
+# terminaba con exito. Ahora se detiene y explica como resolverlo.
 if FUENTE is None:
-    print("Aviso: no se encontró Times New Roman ni Liberation Serif; se usa Times-Roman integrada "
-          "(los símbolos griegos como χ o λ pueden no verse).")
-    FUENTE = "Times-Roman"
-    registerFontFamily("Times-Roman", normal="Times-Roman", bold="Times-Bold",
-                       italic="Times-Italic", boldItalic="Times-BoldItalic")
+    raise SystemExit(
+        "No se encontro Times New Roman ni Liberation Serif.\n"
+        "El informe usa los simbolos Greekos chi, lambda, alfa y la raiz cuadrada, que las\n"
+        "fuentes base-14 de ReportLab no cubren. Sin una fuente TTF el PDF saldria con\n"
+        "esos simbolos perdidos.\n"
+        "  Windows: comprobar C:/Windows/Fonts/times.ttf, timesbd.ttf, timesi.ttf, timesbi.ttf\n"
+        "  Linux:   apt install fonts-liberation   (o ttf-mscorefonts-installer)")
 MONO = "Courier"
 
 # ---------------------------------------------------------------------------
@@ -166,7 +173,13 @@ def inline_a_xml(tok):
             etiqueta = c.content.strip("<>").strip().lower()
             if etiqueta in ETIQUETAS_OK:
                 out.append("<br/>" if etiqueta.startswith("br") else c.content.lower())
-        elif t in ("link_open", "link_close", "image"):
+        elif t == "link_open":
+            # AUDITORIA M12: antes se hacia "pass" y la URL se perdia. En una lista de
+            # referencias APA, un DOI escrito como [texto](url) aparecia solo con el texto.
+            href = c.attrGet("href") or ""
+            if href and href not in (c.content or ""):
+                out.append(f' <font size="{PT - 1.5}">{escape(href)}</font> ')
+        elif t in ("link_close", "image"):
             pass
         else:
             out.append(escape(c.content or ""))
@@ -197,6 +210,10 @@ def flowable_imagen(src):
 
 def flowable_tabla(filas, alineaciones):
     ncol = len(filas[0])
+    # AUDITORIA m6: no habia normalizacion; una fila con menos celdas reventaba con
+    # IndexError en la linea de anchos y una con mas en la de alineaciones.
+    filas = [(f + [""] * ncol)[:ncol] for f in filas]
+    alineaciones = (list(alineaciones) + [None] * ncol)[:ncol]
     # Ancho de columnas: ancho natural del contenido; si no cabe, se encogen solo las
     # columnas de texto largo (que pueden partirse en varias líneas).
     est = E["celda"]
@@ -224,6 +241,8 @@ def flowable_tabla(filas, alineaciones):
             celdas.append(Paragraph(c, con_alineacion(E["celda"], al)))
         datos.append(celdas)
     t = Table(datos, colWidths=anchos, repeatRows=1, hAlign="CENTER")
+    # AUDITORIA m5: se usaba el atributo privado Table._cellvalues para contar filas.
+    t.n_filas = len(filas)
     t.setStyle(TableStyle([
         ("LINEABOVE", (0, 0), (-1, 0), 0.9, colors.black),
         ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.black),
@@ -249,7 +268,11 @@ while i < len(tokens):
     if t == "heading_open":
         nivel = int(tk.tag[1])
         contenido = inline_a_xml(tokens[i + 1])
-        plano = tokens[i + 1].content.strip()
+        # AUDITORIA M10: se comparaba contra el Markdown CRUDO, de modo que un encabezado
+        # con enfasis (p. ej. "# **Referencias**") hacia fallar en silencio la comparacion:
+        # las Referencias perdian la sangria francesa y el salto de pagina, y el Resumen
+        # ganaba una sangria que APA 7 no prescribe. Se compara sobre texto plano.
+        plano = re.sub(r"[*_`]", "", tokens[i + 1].content).strip()
         if nivel == 1:
             seccion = plano
             if (plano == "Referencias" or plano.startswith("Apéndice") or plano.startswith("Anexo")) \
@@ -335,8 +358,17 @@ while i < len(tokens):
         i += 1
         continue
     if t == "html_block":
-        if tk.content.strip().lower() == "<!-- salto -->":
+        # AUDITORIA M12: antes se descartaba en silencio TODO bloque HTML que no fuera
+        # <!-- salto -->. El autor ve en GitHub exactamente lo que escribe, asi que un
+        # <div>, <u> o <span> futuro habria desaparecido del PDF sin error ni aviso.
+        _c = tk.content.strip()
+        if _c.lower() == "<!-- salto -->":
             items.append(("salto", PageBreak()))
+        elif not _c.startswith("<!--"):
+            raise SystemExit(
+                f"generar_pdf_apa.py: bloque HTML no soportado; se perderia del PDF:\n"
+                f"{_c[:200]}\n"
+                f"Conviertalo a Markdown o anade el bloque a ETIQUETAS_OK en inline_a_xml().")
         i += 1
         continue
     i += 1
@@ -356,7 +388,7 @@ while k < len(items):
             grupo.append(items[k][1])
             k += 1
         grupo.append(Spacer(1, 10))
-        alto_tabla = sum(1 for g in grupo if isinstance(g, Table) and len(g._cellvalues) > 22)
+        alto_tabla = sum(1 for g in grupo if isinstance(g, Table) and getattr(g, "n_filas", 0) > 22)
         historia.extend(grupo if alto_tabla else [KeepTogether(grupo)])
         continue
     historia.append(fl)

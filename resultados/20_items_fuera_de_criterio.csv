@@ -1,0 +1,21 @@
+﻿,item,carga_principal,carga_cruzada_max,cumple_criterio
+0,Historia,0.511,0.178,True
+1,Política,0.736,0.056,True
+2,Matemáticas,0.776,0.119,True
+3,Física,0.837,0.162,True
+4,Computación (software/hardware),0.348,0.267,False
+5,Biología,0.89,0.042,True
+6,Química,0.797,0.152,True
+7,Lectura de poesía,0.495,0.338,True
+8,Medicina,0.818,0.095,True
+9,Derecho,0.638,0.176,True
+10,Autos,0.532,0.172,True
+11,Arte (exposiciones),0.742,0.122,True
+12,Actividades al aire libre,0.383,0.221,False
+13,Tocar instrumentos musicales,0.424,0.103,True
+14,Escritura de poesía,0.463,0.068,True
+15,Deporte competitivo,0.532,0.076,True
+16,Vida de celebridades,0.633,0.025,True
+17,Compras,0.756,0.127,True
+18,Teatro,0.717,0.157,True
+19,Deportes de adrenalina,0.629,0.115,True

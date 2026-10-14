@@ -3,7 +3,7 @@ titulo: "Modelado de estructuras latentes: análisis factorial aplicado a los in
 autores: "Ana Milena Uribe, Alejandro Quintero, Francisco Mario Campo, Pablo Stevens Casilimas"
 institucion: "POLITÉCNICO GRAN COLOMBIANO"
 curso: "Inferencia Avanzada y Análisis Multivariado – Unidad 2"
-docente: "Jaime Edison Rojas mora"
+docente: "Jaime Edison Rojas Mora"
 fecha: "Octubre de 2026"
 ---
 
@@ -19,13 +19,13 @@ GUÍA PARA EDITAR ESTE INFORME
 
 # Resumen
 
-Se analizó la estructura latente de los intereses de 886 jóvenes de 15 a 30 años a partir de los 32 ítems del bloque «Hobbies e intereses» de la encuesta *Young People Survey*. Las pruebas previas respaldaron el análisis (KMO = 0,76; prueba de Bartlett χ²(496) = 7395,3, *p* < 0,001). El análisis paralelo indicó 6 factores. El análisis factorial exploratorio (AFE) por máxima verosimilitud con rotación promax, tras depurar 12 ítems, produjo una solución de 20 ítems y seis factores interpretables (Arte y cultura, Ciencias de la vida, Ciencias exactas y tecnología, Ciencias sociales y humanidades, Deporte y riesgo, y Consumo y estilo de vida) que explica el 46,4 % de la varianza. En el análisis factorial confirmatorio (AFC), el modelo derivado (M1) mostró un ajuste marginal (CFI = 0,851; RMSEA = 0,070). El modelo ajustado (M2), con 18 ítems y una covarianza de errores justificada, mejoró el ajuste (CFI = 0,890; TLI = 0,858; RMSEA = 0,066; SRMR = 0,062): aceptable según RMSEA y SRMR, pero por debajo del umbral en los índices incrementales. Todos los factores cumplen el criterio de validez discriminante de Fornell-Larcker; la validez convergente es sólida en tres factores y débil en Deporte y riesgo. El análisis de residuos reveló que el género organiza parte de la covarianza no explicada, lo que orienta los siguientes pasos.
+Se analizó la estructura latente de los intereses de 886 jóvenes de 15 a 30 años a partir de los 32 ítems del bloque «Hobbies e intereses» de la encuesta *Young People Survey*. Las pruebas previas respaldaron el análisis (KMO = 0,76; prueba de Bartlett χ²(496) = 7395,3, *p* < 0,001). El análisis paralelo indicó 6 factores. El análisis factorial exploratorio (AFE) por máxima verosimilitud con rotación promax, tras depurar 12 ítems, produjo una solución de 20 ítems y seis factores interpretables (Arte y cultura, Ciencias de la vida, Ciencias exactas y tecnología, Ciencias sociales y humanidades, Deporte y riesgo, y Consumo y estilo de vida) que explica el 46,4 % de la varianza. En el análisis factorial confirmatorio (AFC), el modelo derivado (M1) mostró un ajuste marginal (CFI = 0,851; RMSEA = 0,070). El modelo ajustado (M2), con 18 ítems y una covarianza de errores justificada, mejoró el ajuste (CFI = 0,890; TLI = 0,858; RMSEA = 0,066; SRMR = 0,065): aceptable según RMSEA y SRMR, pero por debajo del umbral en los índices incrementales. La estabilidad de la estructura se comprobó reestimando el AFC por separado en dos mitades aleatorias de la muestra, que reproducen el ajuste de la muestra completa (CFI = 0,889 en ambas). Todos los factores cumplen el criterio de validez discriminante de Fornell-Larcker; en cuanto a la convergencia, el AVE alcanza 0,50 en 2 de los 6 factores y la fiabilidad compuesta alcanza 0,70 en 3 de 6, de modo que solo Ciencias de la vida cumple ambos criterios a la vez. El análisis de residuos reveló que el género organiza parte de la covarianza no explicada, lo que orienta los siguientes pasos.
 
 *Palabras clave:* análisis factorial exploratorio, análisis factorial confirmatorio, bondad de ajuste, intereses vocacionales, Python
 
 <!-- salto -->
 
-# Modelado de estructuras latentes: análisis factorial aplicado a los intereses de jóvenes
+# Modelado de Estructuras Latentes: Análisis Factorial Aplicado a los Intereses de Jóvenes
 
 Los intereses de una persona (lo que le gusta leer, estudiar o hacer en su tiempo libre) no se observan como un todo, sino a través de muchas preferencias concretas. El análisis factorial permite pasar de esas decenas de preferencias a unas pocas dimensiones latentes que las explican. Este informe aplica el análisis factorial exploratorio (AFE) para descubrir esas dimensiones y el análisis factorial confirmatorio (AFC) para poner a prueba el modelo de medición resultante, siguiendo el flujo propuesto en la lectura fundamental de la unidad (Rojas Mora, s. f.).
 
@@ -38,33 +38,33 @@ El objetivo general es identificar, modelar y validar la estructura latente de l
 
 # Método
 
-## Fuente de datos
+## Fuente de Datos
 
 Se utilizó la base *Young People Survey*, publicada en Kaggle por Sabo (s. f.). Contiene las respuestas de 1010 personas de nacionalidad eslovaca, de 15 a 30 años, a un cuestionario de 150 preguntas aplicado en 2013 por estudiantes de la Facultad de Ciencias Sociales y Económicas de la Universidad Comenius de Bratislava. El archivo `responses.csv` contiene los datos y `columns.csv`, el diccionario que relaciona cada columna con la pregunta original.
 
-## Variables seleccionadas y justificación
+## Variables Seleccionadas y Justificación
 
 De las secciones del cuestionario (música, películas, hobbies, fobias, salud, rasgos de personalidad, gastos y demografía) se seleccionó el bloque completo «Hobbies e intereses»: 32 ítems en los que cada persona indica cuánto le interesa un tema, en una escala de 1 (*nada interesado*) a 5 (*muy interesado*). El bloque es adecuado por tres razones: (a) cumple el requisito de al menos 20 variables cuantitativas relacionadas; (b) todos los ítems comparten formato y escala, condición deseable para el análisis factorial; y (c) existe teoría previa sobre la estructura de los intereses, como el modelo RIASEC de Holland (1997) y la dimensión «personas–cosas» descrita por Su et al. (2009), lo que permite contrastar la solución empírica con expectativas conceptuales. El Apéndice A lista los 32 ítems con su pregunta original y sus estadísticos descriptivos.
 
-## Tratamiento de datos faltantes y supuestos
+## Tratamiento de Datos Faltantes y Supuestos
 
-Ningún ítem supera el 1,5 % de respuestas vacías, pero al combinarlos 124 personas tienen al menos un faltante. Se aplicó eliminación por lista, con lo que quedaron *n* = 886 casos completos, una muestra amplia para el análisis factorial (más de 27 casos por variable). Las medias van de 1,89 («Escritura de poesía») a 4,55 («Socializar con amigos»), y las asimetrías, de -1,62 a 1,24. La prueba de Mardia (1970) rechazó la normalidad multivariada (curtosis multivariada = 1131,7 frente a 1088 esperado; *z* = 13,93, *p* < 0,001), algo esperable en ítems Likert de cinco puntos. Esta condición se retoma como limitación en la discusión.
+Ningún ítem supera el 1,5 % de respuestas vacías, pero al combinarlos 124 personas tienen al menos un faltante. Se aplicó eliminación por lista, con lo que quedaron *n* = 886 casos completos, una muestra amplia para el análisis factorial (más de 27 casos por variable). Las medias van de 1,89 («Escritura de poesía») a 4,55 («Socializar con amigos»), y las asimetrías, de -1,62 a 1,24. La prueba de Mardia (1970) rechazó la normalidad multivariada (curtosis multivariada = 1131,7 frente a 1088 esperado; *z* = 13,93, *p* < 0,001), algo esperable en ítems Likert de cinco puntos. Conviene precisar que se calculó con los 32 ítems del bloque y no con los 18 que entran finalmente en el AFC, de modo que parte de esa desviación procede de ítems que después se eliminaron; además, la aproximación asintótica de la curtosis multivariada pierde fiabilidad cuando *p* es grande, por lo que el *p* reportado debe leerse con cautela. Ambas salvedades se retoman como limitación. Esta condición se retoma como limitación en la discusión.
 
-## Procedimiento de análisis
+## Procedimiento de Análisis
 
 El análisis se realizó en Python 3 con las librerías `pandas`, `factor_analyzer` (AFE) y `semopy` (AFC; Igolkina y Meshcheryakov, 2020). El código completo está en el archivo `analisis_factorial.py`, que genera todas las tablas y figuras de este informe; se fijó la semilla aleatoria 2026 para garantizar la reproducibilidad.
 
 # Resultados
 
-## Análisis factorial exploratorio
+## Análisis Factorial Exploratorio
 
-### Factibilidad del análisis
+### Factibilidad del Análisis
 
-La medida de adecuación muestral KMO global fue 0,762, valor «bueno» según Kaiser (1974) y superior al umbral de 0,70 recomendado por Yong y Pearce (2013). Las medidas individuales (MSA) oscilaron entre 0,636 («Matemáticas») y 0,845 («Arte (exposiciones)»); ningún ítem quedó por debajo de 0,50, de modo que ninguno se excluyó por este criterio. La prueba de esfericidad de Bartlett fue significativa, χ²(496) = 7395,32, *p* < 0,001, por lo que se rechaza que la matriz de correlaciones sea una matriz de identidad. Ambas pruebas respaldan la aplicación del AFE.
+La medida de adecuación muestral KMO global fue 0,762, valor que Kaiser (1974) califica de intermedio (*middling*) y que supera el umbral de 0,70 recomendado por Yong y Pearce (2013). Las medidas individuales (MSA) oscilaron entre 0,636 («Matemáticas») y 0,845 («Arte (exposiciones)»); ningún ítem quedó por debajo de 0,50, de modo que ninguno se excluyó por este criterio. La prueba de esfericidad de Bartlett fue significativa, χ²(496) = 7395,32, *p* < 0,001, por lo que se rechaza que la matriz de correlaciones sea una matriz de identidad. Ambas pruebas respaldan la aplicación del AFE.
 
-### Número de factores
+### Número de Factores
 
-Se contrastaron tres criterios. El criterio de Kaiser (autovalores mayores que 1) sugiere 10 factores, pero es conocido que sobreestima el número de factores cuando hay muchas variables. El gráfico de sedimentación muestra un cambio de pendiente entre el quinto y el séptimo autovalor. El análisis paralelo de Horn (1965), que compara cada autovalor observado con el percentil 95 de los autovalores de 500 matrices de datos aleatorios del mismo tamaño, es el criterio más preciso: el sexto autovalor observado (1,403) supera al aleatorio (1,227), pero el séptimo (1,144) ya no (1,201). Por tanto, se retienen 6 factores (ver Figura 1).
+Se contrastaron tres criterios. El criterio de Kaiser (autovalores mayores que 1) sugiere 10 factores, pero es conocido que sobreestima el número de factores cuando hay muchas variables. El gráfico de sedimentación muestra un cambio de pendiente entre el quinto y el séptimo autovalor. El análisis paralelo de Horn (1965), que compara cada autovalor observado con el percentil 95 de los autovalores de 500 matrices de datos aleatorios del mismo tamaño, es el criterio que suele recomendarse por su conservatism: el sexto autovalor observado (1,403) supera al aleatorio (1,227), pero el séptimo (1,144) ya no (1,201). Por tanto, se retienen 6 factores (ver Figura 1).
 
 **Figura 1**
 
@@ -74,27 +74,33 @@ Se contrastaron tres criterios. El criterio de Kaiser (autovalores mayores que 1
 
 *Nota.* La línea discontinua amarilla es el percentil 95 de autovalores de datos aleatorios (500 réplicas). Se retienen los factores cuyo autovalor observado supera esa línea.
 
-Como comparación se revisaron también las soluciones de cinco y siete factores (ver Tabla 1). Con cinco factores, Matemáticas y Física se mezclan con Computación y Autos; con siete, el factor de ciencias exactas se divide en dos (Matemáticas y Física por un lado; Internet y Computación por otro), y el segundo queda con solo dos ítems. La solución de seis factores es la más interpretable.
+Como comparación se revisaron también las soluciones de tres a siete factores (ver Tabla 1). Se incluyeron las soluciones con **menos** factores que el que indica el análisis paralelo porque el resultado final no alcanza 0,90 en CFI y TLI, y en esa situación la revisión estándar exige contrastar la estructura hacia abajo, no solo hacia arriba. La solución de seis factores es la más interpretable y la que explica más varianza sin fragmentar los dominios: con cinco, Matemáticas y Física se mezclan con Computación y Autos; con siete, el dominio de las ciencias exactas se divide en dos factores, {Matemáticas, Física} y {Internet, Computación, Ciencia y tecnología}, y quedan **dos** factores con solo dos ítems. La solución de cuatro factores es la más limpia en cuanto a composición —18 ítems y **ningún** factor con menos de tres indicadores— y por eso se considera con atención en la discusión; explica sin embargo 30,4 % de la varianza, frente al 38,6 % de la solución de seis factores sobre los mismos 32 ítems.
 
 **Tabla 1**
 
-*Comparación de soluciones alternativas (máxima verosimilitud, rotación promax)*
+*Comparación de soluciones alternativas (máxima verosimilitud, rotación promax, 32 ítems)*
 
-| Factores (*k*) | Varianza acumulada (32 ítems) | Ítems con carga ≥ 0,40 |
-| :---: | :---: | :---: |
-| 5 | 34,7 % | 21 |
-| 6 | 38,6 % | 20 |
-| 7 | 41,7 % | 22 |
+| Factores (*k*) | Varianza acumulada | Ítems con carga ≥ 0,40 | Ítems retenidos tras depurar | Factores con < 3 ítems |
+| :---: | :---: | :---: | :---: | :---: |
+| 3 | 25,7 % | 16 | 16 | 0 |
+| 4 | 30,4 % | 20 | 18 | 0 |
+| 5 | 34,7 % | 21 | 18 | 1 |
+| **6** | **38,6 %** | 20 | 20 | 1 |
+| 7 | 41,7 % | 22 | 22 | 2 |
 
-### Extracción, rotación y depuración de ítems
+*Nota.* Las tres primeras columnas se calculan sobre los 32 ítems con la misma extracción y rotación. «Ítems retenidos tras depurar» aplica además el criterio de carga cruzada, y «Factores con < 3 ítems» cuenta los factores que quedan por debajo de tres indicadores: es el criterio que revela que la solución de seis factores ya contiene un factor de dos ítems, mientras que la de cuatro no contiene ninguno.
 
-Se usó máxima verosimilitud (ML) como método de extracción, que la actividad admite y que además permite continuar con el AFC bajo el mismo estimador. Se aplicó una rotación oblicua promax porque no hay razón teórica para suponer que los intereses son independientes entre sí; por ejemplo, el interés por la física y por la biología suelen ir juntos. La rotación varimax obliga a que los factores sean ortogonales, mientras que promax permite estimar sus correlaciones y, si estas fueran nulas, daría un resultado similar.
+### Extracción, Rotación y Depuración de Ítems
 
-Con los 32 ítems, la solución explicó el 38,6 % de la varianza. Para depurar se aplicaron dos reglas habituales: retener un ítem solo si (a) su carga principal es mayor o igual que 0,40 y (b) ninguna carga cruzada alcanza 0,35. Se eliminaron 12 ítems: Psicología, Internet, Economía y gestión, Geografía, Idiomas extranjeros, Religión, Baile, Deporte recreativo, Jardinería, Ciencia y tecnología, Socializar con amigos, Mascotas. Varios de ellos son temas transversales que interesan a perfiles muy distintos (Internet, Socializar con amigos, Idiomas) o que mezclan dos dominios (Ciencia y tecnología, Economía y gestión), por lo que no definen con claridad ningún factor. El Apéndice B presenta el detalle completo, con cargas y comunalidades.
+Se usó máxima verosimilitud (ML) como método de extracción porque es el que permite continuar con el AFC bajo el mismo estimador. Se aplicó una rotación oblicua promax porque no hay razón teórica para suponer que los intereses son independientes entre sí; por ejemplo, el interés por la física y por la biología suelen ir juntos. La rotación varimax obliga a que los factores sean ortogonales, mientras que promax permite estimar sus correlaciones y, si estas fueran nulas, daría un resultado similar.
 
-### Solución factorial final
+Con los 32 ítems, la solución explicó el 38,6 % de la varianza. Para depurar se aplicaron dos reglas habituales: retener un ítem solo si (a) su carga principal es mayor o igual que 0,40 y (b) ninguna carga cruzada alcanza 0,35. Se eliminaron 12 ítems: Psicología, Internet, Economía y gestión, Geografía, Idiomas extranjeros, Religión, Baile, Deporte recreativo, Jardinería, Ciencia y tecnología, Socializar con amigos, Mascotas. Conviene señalar que, en esta muestra, los 12 incumplían ya la condición (a): ninguno fue eliminado únicamente por su carga cruzada, de modo que el criterio (b) no tuvo efecto práctico sobre el resultado. Varios de ellos son temas transversales que interesan a perfiles muy distintos (Internet, Socializar con amigos, Idiomas) o que mezclan dos dominios (Ciencia y tecnología, Economía y gestión), por lo que no definen con claridad ningún factor. El Apéndice B presenta el detalle completo, con cargas y comunalidades.
 
-El AFE se reestimó con los 20 ítems retenidos (KMO = 0,726). La Figura 2 muestra la matriz de patrones: cada ítem carga de forma clara en un solo factor y las cargas cruzadas son pequeñas. La solución explica el 46,4 % de la varianza común (ver Tabla 2).
+### Solución Factorial Final
+
+El AFE se reestimó con los 20 ítems retenidos (KMO = 0,726). La Figura 2 muestra la matriz de patrones: la mayoría de los ítems carga de forma clara en un solo factor. La solución explica el 46,4 % de la varianza total de los 20 ítems (ver Tabla 2).
+
+Dos salvedades importan al leer esa figura. Primera: la depuración se aplicó a la solución inicial de 32 ítems y **no se volvió a comprobar tras la reestimación**. Al verificarlo sobre la solución final, dos ítems quedan por debajo del umbral declarado de 0,40 — Computación (0,348) y Actividades al aire libre (0,383) — y ambos son precisamente los que luego se eliminan en el AFC. Segunda: la carga cruzada de Lectura de poesía es de 0,338 sobre *Deporte y riesgo*, un 68 % de su carga principal de 0,495; no es una carga cruzada «pequeña», y es el ítem que concentra tres de los seis mayores residuos del AFC. Ambas salvedades se retoman como limitación.
 
 **Figura 2**
 
@@ -122,11 +128,13 @@ El AFE se reestimó con los 20 ítems retenidos (KMO = 0,726). La Figura 2 muest
 
 Las correlaciones entre factores son bajas o moderadas (máximo |*r*| = 0,39). Las más altas son las de Arte y cultura con Consumo y estilo de vida (*r* = 0,39), Arte y cultura con Deporte y riesgo (*r* = -0,35) y Ciencias de la vida con Ciencias exactas (*r* = 0,32). Estas correlaciones confirman que la rotación oblicua era apropiada.
 
-### Estabilidad de la solución
+### Estabilidad de la Solución
 
 Como verificación adicional, la muestra se dividió al azar en dos mitades y se reestimó el AFE en cada una. La similitud entre las cargas de ambas mitades se midió con el coeficiente de congruencia de Tucker, cuyos valores iguales o mayores que 0,95 indican factores prácticamente iguales, y los valores entre 0,85 y 0,94, similitud aceptable (Lorenzo-Seva y ten Berge, 2006). Arte y cultura (0,976), Ciencias de la vida (0,977) y Ciencias sociales (0,960) son muy estables; Ciencias exactas (0,908) y Consumo (0,889) son aceptables, y Deporte y riesgo (0,834) es el factor menos estable, un primer aviso que el AFC confirmará.
 
-## Diseño del modelo de medición
+La réplica se extendió después al AFC, que hasta entonces no se había contrastado en mitades. Al reestimar el modelo final M2 por separado en cada mitad (*n* = 443 por mitad), los índices de ajuste se mantuvieron muy cerca de los de la muestra completa: CFI = 0,889 en ambas mitades frente a 0,890; TLI = 0,858 en ambas; RMSEA = 0,066 y 0,068 frente a 0,066; y SRMR = 0,066 y 0,072 frente a 0,065. La estructura es, por tanto, reproducible en submuestras, no un artefacto de la muestra completa. Debe señalarse que esta comprobación se aplicó únicamente al modelo final de 18 ítems, no al modelo inicial M1 de 20 ítems.
+
+## Diseño del Modelo de Medición
 
 A partir del AFE se propone un modelo de seis factores correlacionados. Cada factor se nombró según el contenido común de sus ítems y se vinculó con un referente conceptual (ver Tabla 3).
 
@@ -143,6 +151,8 @@ A partir del AFE se propone un modelo de seis factores correlacionados. Cada fac
 | Deporte y riesgo | Autos, Deporte competitivo, Deportes de adrenalina | Actividad física, competencia y emociones fuertes; búsqueda de sensaciones (Zuckerman, 1994). |
 | Consumo y estilo de vida | Vida de celebridades, Compras | Moda, compras y vida de los famosos; orientación hacia el estilo de vida (solo dos indicadores). |
 
+*Nota.* El factor de Consumo y estilo de vida queda con dos indicadores, el mínimo que permite identificar un factor. El de Ciencias exactas y tecnología incluye un ítem (Computación) cuya pertenencia es discutible, como se explica al presentar el AFC.
+
 El modelo asume que (a) cada ítem mide un solo factor, sin cargas cruzadas; (b) los errores de medición son independientes; y (c) los seis factores pueden correlacionarse. En notación matricial corresponde a **X** = **Λξ** + **δ**, donde **Λ** contiene únicamente las cargas señaladas en la Tabla 3. En la sintaxis de `lavaan`, que también usa `semopy`, el modelo M1 se escribe así:
 
 ```
@@ -156,15 +166,15 @@ Consumo =~ Celebridades + Compras
 
 Se plantean tres hipótesis: H1, el modelo de seis factores reproduce adecuadamente la matriz de covarianzas observada; H2, los indicadores convergen en sus factores (cargas estandarizadas iguales o mayores que 0,50 y fiabilidad compuesta igual o mayor que 0,70); y H3, los factores son distinguibles entre sí (validez discriminante).
 
-## Análisis factorial confirmatorio
+## Análisis Factorial Confirmatorio
 
-### Especificación y estimación
+### Especificación y Estimación
 
 El AFC se estimó con la librería `semopy`, equivalente a `lavaan` de R, mediante máxima verosimilitud. La escala de cada factor se fijó igualando a 1 la carga del primer indicador. Se reportan cinco índices de ajuste: χ², CFI, TLI, RMSEA (con intervalo de confianza del 90 %) y SRMR, con los puntos de corte de Hu y Bentler (1999): CFI y TLI iguales o mayores que 0,95 (0,90 aceptable), RMSEA igual o menor que 0,06 (0,08 aceptable) y SRMR igual o menor que 0,08.
 
 ### Ajuste del modelo inicial (M1)
 
-El modelo M1 (20 ítems) produjo χ²(155) = 823,97, *p* < 0,001; CFI = 0,851; TLI = 0,817; RMSEA = 0,070, IC 90 % [0,065, 0,075]; SRMR = 0,067. RMSEA y SRMR están en la zona aceptable, pero CFI y TLI quedan por debajo de 0,90: el ajuste es marginal y conviene buscar el origen del desajuste antes de aceptar el modelo.
+El modelo M1 (20 ítems) produjo χ²(155) = 823,97, *p* < 0,001; CFI = 0,851; TLI = 0,817; RMSEA = 0,070, IC 90 % [0,065, 0,075]; SRMR = 0,070. RMSEA y SRMR están en la zona aceptable, pero CFI y TLI quedan por debajo de 0,90: el ajuste es marginal y conviene buscar el origen del desajuste antes de aceptar el modelo.
 
 Se revisaron dos fuentes de información. Primero, las cargas estandarizadas: tres indicadores quedaron por debajo de 0,40: Actividades al aire libre (λ = 0,29); Tocar instrumentos musicales (λ = 0,37); Computación (software/hardware) (λ = 0,39). Segundo, los residuos de correlación, es decir, la diferencia entre la correlación observada y la que reproduce el modelo, que señalan los pares de ítems peor explicados (ver Tabla 4).
 
@@ -181,16 +191,16 @@ Se revisaron dos fuentes de información. Primero, las cargas estandarizadas: tr
 | Deportes de adrenalina | Actividades al aire libre | 0,192 |
 | Computación (software/hardware) | Teatro | -0,186 |
 
-*Nota.* Los valores positivos indican que dos ítems se relacionan más de lo que el modelo predice, y los negativos, menos. Los residuos absolutos mayores que 0,10 señalan zonas de desajuste.
+*Nota.* Los valores positivos indican que dos ítems se relacionan más de lo que el modelo predice, y los negativos, menos. Los residuos absolutos mayores que 0,10 señalan zonas de desajuste. Se muestran los **seis** mayores de los diez que calcula el script; los cuatro restantes, en orden decreciente, son Biología–Computación (−0,184), Escritura de poesía–Tocar instrumentos musicales (+0,173), Medicina–Computación (−0,158) y Compras–Derecho (+0,134), y están disponibles en el archivo `resultados/12_residuos_M1.csv`.
 
-El patrón de residuos es revelador. El mayor residuo (0,29) une Computación y Autos, que están en factores distintos; ambos tienen además residuos negativos con Lectura de poesía, y Computación también con Teatro. Este patrón coincide con la variable género: Computación (*r* = 0,47) y Autos (*r* = 0,42) son los intereses más asociados a ser hombre, mientras que Compras (*r* = -0,40), Lectura de poesía (*r* = -0,37) y Teatro (*r* = -0,35) son los más asociados a ser mujer. Se trata de la dimensión «cosas–personas» documentada por Su et al. (2009): parte de la covarianza entre intereses no se debe a los seis factores, sino a un eje transversal ligado al género.
+El patrón de residuos es revelador. El mayor residuo (0,295) une Computación y Autos, que están en factores distintos; ambos tienen además residuos negativos con Lectura de poesía, y Computación también con Teatro. Este patrón coincide con la variable género, codificada como 1 = hombre y 0 = mujer (*n* = 883, porque tres de los 886 casos completos no tienen ese dato): Computación (*r* = 0,47) y Autos (*r* = 0,42) son los intereses más asociados a ser hombre, mientras que Compras (*r* = -0,40), Lectura de poesía (*r* = -0,37) y Teatro (*r* = -0,35) son los más asociados a ser mujer. Se trata de la dimensión «cosas–personas» documentada por Su et al. (2009): parte de la covarianza entre intereses no se debe a los seis factores, sino a un eje transversal ligado al género.
 
 ### Re-especificación: modelo ajustado (M2)
 
 Siguiendo la recomendación de ajustar el modelo solo con justificación teórica (Kline, 2023), se hicieron tres cambios, cada uno respaldado tanto por los datos como por el contenido de los ítems:
 
 - Se eliminó Actividades al aire libre (λ = 0,29): ya en el AFE era el ítem más débil del factor, su contenido (naturaleza, campo) es ajeno al dominio artístico-cultural y mostraba residuo positivo con Deportes de adrenalina.
-- Se eliminó Tocar instrumentos musicales (λ = 0,37): es una práctica (hacer) y no un interés de consumo cultural como los otros ítems del factor, y comparte varianza sobre todo con Escritura de poesía.
+- Se eliminó Tocar instrumentos musicales (λ = 0,37). El criterio declarado fue la carga estandarizada por debajo de 0,50 en M1, no el tipo de contenido del ítem: Escritura de poesía es igualmente una práctica de creación y se conserva, con λ = 0,43, porque la diferencia entre ambas es de 0,06. Conviene añadir que la pareja Escritura de poesía–Tocar instrumentos musicales presenta un residuo de correlación de +0,173, uno de los mayores de M1, lo que indica que el modelo subestima la covarianza entre ambos; liberar esa covarianza de errores habría sido una alternativa igualmente justificable a eliminar un ítem.
 - Se conservó Computación (λ = 0,39) pese a su carga baja, porque sin ella el factor Ciencias exactas quedaría con dos indicadores, por debajo de los tres recomendados para una identificación robusta, y se liberó la covarianza de errores entre Computación y Autos: ambos ítems reflejan un interés técnico-mecánico común (máquinas, tecnología) que los seis factores no capturan.
 
 La sintaxis añadida al modelo es `PC ~~ Autos`. No se aplicaron más modificaciones para no sobreajustar el modelo a esta muestra. La Tabla 5 compara el ajuste de ambos modelos.
@@ -199,17 +209,17 @@ La sintaxis añadida al modelo es `PC ~~ Autos`. No se aplicaron más modificaci
 
 *Índices de bondad de ajuste de los modelos M1 y M2*
 
-| Modelo | Ítems | χ² (*gl*) | χ²/*gl* | CFI | TLI | RMSEA [IC 90 %] | SRMR |
+| Modelo | Ítems | χ² (*gl*) | *p* | CFI | TLI | RMSEA [IC 90 %] | SRMR |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| M1 | 20 | 823,97 (155) | 5,32 | 0,851 | 0,817 | 0,070 [0,065, 0,075] | 0,067 |
-| M2 | 18 | 581,29 (119) | 4,88 | 0,890 | 0,858 | 0,066 [0,061, 0,072] | 0,062 |
-| Criterio |  | *p* > 0,05 | < 3 | ≥ 0,90 / 0,95 | ≥ 0,90 / 0,95 | ≤ 0,08 / 0,06 | ≤ 0,08 |
+| M1 | 20 | 823,97 (155) | < 0,001 | 0,851 | 0,817 | 0,070 [0,065, 0,075] | 0,070 |
+| M2 | 18 | 581,29 (119) | < 0,001 | 0,890 | 0,858 | 0,066 [0,061, 0,072] | 0,065 |
+| Criterio | | — | > 0,05 | ≥ 0,95 (0,90) | ≥ 0,95 (0,90) | ≤ 0,06 (0,08) | ≤ 0,08 |
 
-*Nota.* En ambos modelos *p* < 0,001 para χ². Los criterios muestran el umbral aceptable / ideal (Hair et al., 2012; Hu y Bentler, 1999). Como M2 tiene menos ítems, los modelos no están anidados y se comparan por sus índices, no con una prueba de diferencia de χ².
+*Nota.* Entre paréntesis se indica el umbral aceptable. Los niveles 0,95 y 0,06 de CFI, TLI y RMSEA proceden de Hu y Bentler (1999); el nivel aceptable 0,90 y 0,08, y el criterio SRMR ≤ 0,08, de Browne y Cudeck (1993) y Hair et al. (2010). En ambos modelos *p* < 0,001 para χ². Se omite deliberadamente el cociente χ²/*gl*: con *n* = 886 es muy sensible al tamaño de la muestra y no se recomienda en muestras grandes (Brown, 2015). El SRMR se calcula como la raíz del promedio de los residuales de correlación sobre los pares distintos, sin incluir la diagonal. Como M2 tiene menos ítems, los modelos no están anidados y se comparan por sus índices, no con una prueba de diferencia de χ².
 
-El χ² sigue siendo significativo, lo que era previsible con *n* = 886, porque esta prueba es muy sensible al tamaño de la muestra (Brown, 2015). El RMSEA (0,066, con todo su intervalo de confianza por debajo de 0,08) y el SRMR (0,062) indican un ajuste aceptable: el error de aproximación por grado de libertad es moderado y los residuos promedio son pequeños. En cambio, CFI (0,890) y TLI (0,858) no alcanzan 0,90. El CFI depende de las correlaciones medias entre las variables: aquí la correlación absoluta media entre los 18 ítems es solo 0,13, de modo que el modelo nulo de referencia ya ajusta relativamente bien y el margen de mejora que miden los índices incrementales es estrecho. En conjunto, siguiendo el enfoque de múltiples indicadores, el ajuste de M2 se califica como aceptable en términos absolutos, pero mejorable, en línea con el ejemplo de la lectura de la unidad (CFI = 0,782; RMSEA = 0,078 para un modelo de cinco factores de personalidad). H1 se acepta solo parcialmente.
+El χ² sigue siendo significativo, lo que era previsible con *n* = 886, porque esta prueba es muy sensible al tamaño de la muestra (Brown, 2015). El RMSEA (0,066, con todo su intervalo de confianza por debajo de 0,08) y el SRMR (0,065) indican un ajuste aceptable: el error de aproximación por grado de libertad es moderado y los residuos promedio son pequeños. En cambio, CFI (0,890) y TLI (0,858) no alcanzan 0,90. El CFI depende de las correlaciones medias entre las variables: aquí la correlación absoluta media entre los 18 ítems es solo 0,13, de modo que el modelo nulo de referencia ya ajusta relativamente bien y el margen de mejora que miden los índices incrementales es estrecho. En conjunto, siguiendo el enfoque de múltiples indicadores, el ajuste de M2 se califica como aceptable en términos absolutos, pero mejorable, en línea con el ejemplo de la lectura de la unidad (CFI = 0,782; RMSEA = 0,078 para un modelo de cinco factores de personalidad). H1 se acepta solo parcialmente.
 
-### Cargas factoriales del modelo final
+### Cargas Factoriales del Modelo Final
 
 **Tabla 6**
 
@@ -248,7 +258,7 @@ Dieciséis de las 18 cargas superan 0,50, el criterio citado en la lectura de la
 
 *Nota.* Las flechas indican cargas estandarizadas; su grosor es proporcional a la carga. La flecha curva inferior es la covarianza de errores entre Computación y Autos. Las correlaciones entre factores se presentan en la Figura 4.
 
-### Fiabilidad y validez del constructo
+### Fiabilidad y Validez del Constructo
 
 **Tabla 7**
 
@@ -283,7 +293,7 @@ Las correlaciones son interpretables. Ciencias exactas se asocia positivamente c
 
 ## Lo que se aprendió del comportamiento de las variables
 
-Los intereses tienen una estructura clara y económica. Treinta y dos preferencias se resumen en seis dimensiones con sentido teórico que recuerdan a los tipos de Holland (1997): lo artístico, lo científico (separado en ciencias de la vida y ciencias exactas), lo social-institucional, lo físico-aventurero y el consumo.
+Los intereses tienen una estructura clara y económica. Treinta y dos preferencias se resumen en seis dimensiones con sentido teórico. Dos de ellas recuerdan directamente a los tipos de Holland (1997): lo artístico y el bloque científico-investigativo. Otras dos se vinculan más a la búsqueda de sensaciones (Zuckerman, 1994) y al consumo cultural que a RIASEC, y las dos restantes —Ciencias de la vida y Ciencias sociales— se interpretan por su contenido disciplinar más que por un tipo vocacional. En consecuencia, el modelo se relaciona con RIASEC sin llegar a replicarlo: no se calcularon perfiles por tipo, y faltan las dimensiones «social», «emprendedor» y «convencional» que el modelo de Holland sí distingue.
 
 No todas las variables son buenos indicadores. Los temas transversales (Internet, amigos, idiomas) interesan a casi todos y no discriminan perfiles, y los temas mixtos (Ciencia y tecnología, Economía) se reparten entre factores. Depurarlos mejoró tanto la claridad del AFE como el ajuste del AFC.
 
@@ -294,18 +304,20 @@ Los índices de ajuste deben leerse en conjunto. Un mismo modelo puede ser acept
 ## Limitaciones
 
 - **Datos ordinales tratados como continuos.** Los ítems Likert de cinco puntos y la falta de normalidad multivariada hacen que la estimación ML pueda sesgar los errores estándar y el χ². Sería recomendable estimar con correlaciones policóricas y WLSMV, o con ML robusto (MLR), disponibles en `lavaan` o Mplus.
-- **AFE y AFC sobre la misma muestra.** Confirmar el modelo en los mismos datos que lo generaron favorece el ajuste por capitalización del azar. Lo ideal es validarlo en una muestra independiente; la réplica en mitades mitiga, pero no sustituye, esa validación.
+- **AFE y AFC sobre la misma muestra.** Confirmar el modelo en los mismos datos que lo generaron favorece el ajuste por capitalización del azar, especialmente tras una depuración de ítems y una re-especificación realizadas también sobre esos datos. Como mitigación parcial se reestimó el modelo M2 por separado en dos mitades aleatorias: ambas reproducen el ajuste de la muestra completa (CFI = 0,889 en las dos; TLI = 0,858; RMSEA = 0,066 y 0,068; SRMR = 0,066 y 0,072), lo que indica que la estructura es estable y no es un artefacto de la muestra completa. Aun así, esto no sustituye a una validación en una muestra independiente: la capitalización del azar sigue presente, porque los mismos casos participaron en la elección de los ítems y en la re-especificación.
+- **Depuración no iterativa.** El criterio de carga se aplicó una sola vez, sobre la solución inicial de 32 ítems, y no se re-verificó tras reestimar. Dos ítems de la solución final quedan por debajo del umbral declarado, y ambos se eliminan después en el AFC. Una depuración iterada hasta convergencia habría producido probablemente una estructura más parsimoniosa.
+- **Sin prueba de ajuste del AFE.** El análisis exploratorio no reporta χ² ni RMSEA, de modo que el 46,4 % de varianza explicada se presenta sin una medida de qué tan bien reproduce el modelo la matriz de covarianzas. Es una limitación habitual del AFE por máxima verosimilitud, pero conviene declararla.
 - **Factores con pocos indicadores.** Consumo tiene solo dos ítems y Deporte y riesgo tiene baja fiabilidad. Una versión mejorada del instrumento debería añadir ítems a estos factores (por ejemplo, moda o marcas en Consumo y deportes extremos específicos en Deporte y riesgo).
 - **Contexto y antigüedad de los datos.** La muestra es de jóvenes eslovacos encuestados en 2013 y no es probabilística; los resultados no se pueden generalizar sin estudios de invarianza en otras poblaciones.
 
-## Usos de los factores latentes en la toma de decisiones
+## Usos de los Factores Latentes en la Toma de Decisiones
 
 - **Orientación vocacional y educativa.** Las puntuaciones factoriales permiten construir perfiles de intereses para orientar la elección de carrera (por ejemplo, distinguir a quien se inclina por las ciencias de la vida de quien prefiere las ciencias exactas) o para diseñar actividades extracurriculares según el perfil de cada grupo.
 - **Segmentación de mercados y comunicación.** Una organización cultural, deportiva o comercial dirigida a jóvenes puede segmentar su público con seis puntuaciones en lugar de 32 preguntas y orientar contenidos y canales según el perfil, por ejemplo Arte y cultura frente a Consumo y estilo de vida.
 - **Insumos para otros modelos.** Las puntuaciones factoriales pueden alimentar regresiones, análisis de conglomerados o modelos de aprendizaje automático, por ejemplo para predecir hábitos de gasto, que se miden en otra sección de la misma encuesta.
 - **Encuestas más cortas.** El modelo depurado reduce el cuestionario de 32 a 18 ítems y ahorra tiempo de respuesta sin perder la información estructural.
 
-## Siguientes pasos
+## Siguientes Pasos
 
 El paso inmediato sería un análisis de invarianza por género mediante AFC multigrupo (configuracional, métrica, escalar y estricta; Putnick y Bornstein, 2016). Este análisis permitiría saber si los factores miden lo mismo en hombres y mujeres antes de comparar sus medias latentes, y extender el modelo a uno de ecuaciones estructurales en el que el género prediga los factores. También convendría reestimar el modelo con WLSMV y validarlo en una muestra independiente.
 
@@ -313,9 +325,11 @@ El paso inmediato sería un análisis de invarianza por género mediante AFC mul
 
 Brown, T. A. (2015). *Confirmatory factor analysis for applied research* (2.ª ed.). Guilford Press.
 
+Browne, M. W., y Cudeck, R. (1993). Alternative ways of assessing model fit. *Psychological Methods, 6*(2), 176–188. https://doi.org/10.1037/1082-989X.6.2.176
+
 Fornell, C., y Larcker, D. F. (1981). Evaluating structural equation models with unobservable variables and measurement error. *Journal of Marketing Research, 18*(1), 39–50. https://doi.org/10.1177/002224378101800104
 
-Hair, J. F., Sarstedt, M., Ringle, C. M., y Mena, J. A. (2012). An assessment of the use of partial least squares structural equation modeling in marketing research. *Journal of the Academy of Marketing Science, 40*(3), 414–433. https://doi.org/10.1007/s11747-011-0261-6
+Hair, J. F., Black, W. C., Babin, B. J., y Anderson, R. E. (2010). *Multivariate data analysis: A multivariate approach* (7.ª ed.). Prentice Hall.
 
 Holland, J. L. (1997). *Making vocational choices: A theory of vocational personalities and work environments* (3.ª ed.). Psychological Assessment Resources.
 
@@ -345,7 +359,7 @@ Yong, A. G., y Pearce, S. (2013). A beginner's guide to factor analysis: Focusin
 
 Zuckerman, M. (1994). *Behavioral expressions and biosocial bases of sensation seeking*. Cambridge University Press.
 
-# Apéndice A. Ítems analizados y estadísticos descriptivos
+# Apéndice A. Ítems Analizados y Estadísticos Descriptivos
 
 **Tabla A1**
 
@@ -388,7 +402,7 @@ Zuckerman, M. (1994). *Behavioral expressions and biosocial bases of sensation s
 
 *Nota.* Estadísticos calculados sobre los 886 casos completos. «Faltantes» es el número de respuestas vacías del ítem en la base original (*n* = 1010).
 
-# Apéndice B. AFE inicial y decisiones de depuración
+# Apéndice B. AFE Inicial y Decisiones de Depuración
 
 **Tabla B1**
 

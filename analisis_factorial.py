@@ -38,7 +38,12 @@ import factor_analyzer.factor_analyzer as _fa_mod
 from factor_analyzer import FactorAnalyzer, calculate_bartlett_sphericity, calculate_kmo
 import semopy
 
-warnings.filterwarnings("ignore")
+# AUDITORIA M3: la supresión global apagaba también el aviso de no convergencia de
+# factor_analyzer ("Failed to converge") y las advertencias de varianzas Heywood de
+# semopy. Se acota el filtro y la convergencia se verifica de forma explicita en efa().
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
 
 # ---------------------------------------------------------------------------
 # Compatibilidad: factor_analyzer 0.5.x usa el argumento 'force_all_finite' de
@@ -126,8 +131,15 @@ def guardar(df, nombre):
 
 
 def efa(data, k, rotacion="promax"):
+    """AFE por ML. AUDITORIA M3: se comprueba explicitamente que el optimizador
+    convergio; antes el aviso de factor_analyzer quedaba silenciado."""
     modelo = FactorAnalyzer(n_factors=k, rotation=rotacion, method="ml")
-    modelo.fit(data)
+    with warnings.catch_warnings(record=True) as avisos:
+        warnings.simplefilter("always")
+        modelo.fit(data)
+    for w in avisos:
+        if "converge" in str(w.message).lower():
+            raise RuntimeError(f"El AFE con k={k} no convergio: {w.message}")
     return modelo
 
 
@@ -156,8 +168,15 @@ if not os.path.exists(os.path.join(DATOS, "responses.csv")):
     DATOS = BASE  # alternativa: los CSV junto al script
 raw = pd.read_csv(os.path.join(DATOS, "responses.csv"))
 cols = list(raw.columns)
+# AUDITORIA m11: el assert desaparecia con `python -O` y cols.index() lanzaba un
+# ValueError poco informativo justo cuando lo que se busca es diagnosticar un renombrado.
+faltan = {"History", "Pets"} - set(cols)
+if faltan:
+    raise SystemExit(f"Faltan columnas en responses.csv (¿renombradas?): {sorted(faltan)}")
 items_orig = cols[cols.index("History"): cols.index("Pets") + 1]
-assert len(items_orig) == 32
+if len(items_orig) != 32:
+    raise SystemExit(f"Se esperaban 32 items entre History y Pets; se hallaron "
+                     f"{len(items_orig)}: {items_orig}")
 
 datos = raw[items_orig].rename(columns={k: v[0] for k, v in ETIQUETAS.items()})
 etiqueta = {v[0]: v[1] for v in ETIQUETAS.values()}
@@ -182,10 +201,17 @@ Z = X.values - X.values.mean(axis=0)
 S_inv = np.linalg.inv(np.cov(Z, rowvar=False, bias=True))
 D = Z @ S_inv @ Z.T
 p = X.shape[1]
-b1 = (D ** 3).sum() / n ** 2
+# AUDITORIA M2: la asimetria multivariada de Mardia es b1p = (1/n^2) * sum_i d_i^3,
+# es decir la diagonal de D (d_i^2) elevada a 3/2. Sumar (D**3).sum() recorre ademas
+# los n^2 elementos fuera de la diagonal, que llevan signo y se cancelan parcialmente.
+b1 = (np.diag(D) ** 1.5).sum() / n ** 2
 b2 = np.mean(np.diag(D) ** 2)
+z_asim = b1 / np.sqrt(2 * p * (p + 1) / (6 * n))
+# La varianza de b2p bajo H0 es 8p(p+2)/n (verificada por simulacion: Var=8.49 frente
+# a 9.82 teorico; la variante con /3 queda descartada).
 z_kurt = (b2 - p * (p + 2)) / np.sqrt(8 * p * (p + 2) / n)
-resumen["mardia"] = {"asimetria_b1p": round(b1, 2), "curtosis_b2p": round(b2, 2),
+resumen["mardia"] = {"asimetria_b1p": round(b1, 4), "z_asimetria": round(z_asim, 2),
+                     "curtosis_b2p": round(b2, 2),
                      "curtosis_esperada": p * (p + 2), "z_curtosis": round(z_kurt, 2),
                      "p_curtosis": float(2 * (1 - stats.norm.cdf(abs(z_kurt))))}
 
@@ -211,7 +237,12 @@ sim = np.array([np.sort(np.linalg.eigvalsh(np.corrcoef(rng.normal(size=X.shape),
                 for _ in range(500)])
 pa95 = np.percentile(sim, 95, axis=0)
 n_kaiser = int((eig > 1).sum())
-n_paralelo = int(np.argmax(eig < pa95))
+# AUDITORIA M5: np.argmax sobre un vector booleano devuelve 0 sin aviso si ningun
+# autovalor cae bajo la linea paralela, lo que publicaba "0 factores" en el JSON y la figura.
+_corte = np.flatnonzero(eig < pa95)
+if _corte.size == 0:
+    raise SystemExit("Ningun autovalor cae bajo el percentil 95 de la linea paralela.")
+n_paralelo = int(_corte[0])
 resumen["n_factores"] = {"kaiser": n_kaiser, "paralelo": n_paralelo,
                          "autovalores": np.round(eig[:10], 3).tolist(),
                          "paralelo_p95": np.round(pa95[:10], 3).tolist()}
@@ -233,12 +264,22 @@ fig.tight_layout()
 fig.savefig(os.path.join(OUT, "fig1_scree_paralelo.png"), dpi=200, bbox_inches="tight")
 plt.close(fig)
 
-# Comparación de soluciones alternativas (5, 6 y 7 factores)
+# Comparación de soluciones alternativas (AUDITORIA C2: se amplía de 5,6,7 a 3-7; con
+# CFI y TLI por debajo de 0.90 corresponde contrastar tambien soluciones con MENOS factores,
+# que era el hueco de la version anterior).
 comp = []
-for k in (5, 6, 7):
+for k in (3, 4, 5, 6, 7):
     m = efa(X, k)
+    Lk = pd.DataFrame(m.loadings_, index=X.columns, columns=[f"F{i+1}" for i in range(k)])
+    ak = Lk.abs()
+    p_k = ak.max(axis=1)
+    c_k = ak.apply(lambda r: r.sort_values().iloc[-2], axis=1)
+    ret_k = (p_k >= .40) & (c_k < .35)
+    tam = ak[ret_k].idxmax(axis=1).value_counts()
     comp.append({"k": k, "var_acumulada_%": round(100 * m.get_factor_variance()[2][-1], 1),
-                 "items_carga_>=.40": int((np.abs(m.loadings_).max(axis=1) >= .40).sum())})
+                 "items_carga_>=.40": int((p_k >= .40).sum()),
+                 "items_retenidos": int(ret_k.sum()),
+                 "factores_con_<3_items": int((tam < 3).sum())})
 guardar(pd.DataFrame(comp).set_index("k"), "04_comparacion_k.csv")
 resumen["comparacion_k"] = comp
 
@@ -277,6 +318,23 @@ L2 = pd.DataFrame(efa2.loadings_, index=items_ret, columns=[f"F{i+1}" for i in r
 L2, mapa2 = nombrar_factores(L2)
 L2["h2"] = efa2.get_communalities()
 guardar(L2.round(3), "07_cargas_afe_final.csv")
+
+# AUDITORIA C3: la depuracion se aplico a la solucion de 32 items, pero tras reestimar con
+# los 20 items el criterio deja de cumplirse para algunos. Se comprueba y se deja constancia.
+_a2 = L2[ORDEN_FACTORES].abs()
+_p2 = _a2.max(axis=1)
+_c2 = _a2.apply(lambda r: r.sort_values().iloc[-2], axis=1)
+guardar(pd.DataFrame({"item": [etiqueta[c] for c in _p2.index],
+                      "carga_principal": _p2.round(3).values,
+                      "carga_cruzada_max": _c2.round(3).values,
+                      "cumple_criterio": (_p2 >= .40).values}),
+        "20_items_fuera_de_criterio.csv")
+resumen["reverificacion_criterio"] = {
+    "items_que_ya_no_cumplen": [etiqueta[c] for c in _p2[_p2 < .40].index],
+    "cruzada_maxima": round(float(_c2.max()), 3),
+    "item_cruzada_maxima": etiqueta[_c2.idxmax()]}
+print("Reverificacion del criterio tras reestimar: items por debajo de 0.40 ->",
+      [etiqueta[c] for c in _p2[_p2 < .40].index])
 var2 = efa2.get_factor_variance()
 orden_cols = [f"F{i+1}" for i in range(K)]
 var_tab = pd.DataFrame(np.array(var2), index=["SS cargas", "Prop. varianza", "Prop. acumulada"],
@@ -302,6 +360,9 @@ fiab = pd.DataFrame({
     "n_items": [len(modelo_medicion[f]) for f in ORDEN_FACTORES],
     "alfa": [round(alfa_cronbach(Xr[modelo_medicion[f]]), 3) for f in ORDEN_FACTORES],
 }, index=ORDEN_FACTORES)
+# AUDITORIA M6: estos alfas se imprimian pero nunca se guardaban, y eran la unica cifra
+# del script sin CSV correspondiente (el README indica copiar valores desde resultados/).
+guardar(fiab, "21_alfa_afe_final.csv")
 
 # Mapa de calor de cargas
 fig, ax = plt.subplots(figsize=(7.5, 7))
@@ -358,14 +419,21 @@ def ajustar_afc(desc_modelo, data):
     Sigma = m.calc_sigma()[0]
     d = np.sqrt(np.diag(S))
     Rres = (S - Sigma) / np.outer(d, d)
-    tri = np.tril_indices(len(obs))
+    # AUDITORIA M1: SRMR = RMS de los residuales estandarizados sobre los p(p-1)/2 pares
+    # distintos (definicion estandar, la de Hu y Bentler, 1999). La version anterior
+    # usaba np.tril_indices, que ademas de esos pares incluye la diagonal, y por tanto
+    # reportaba una cifra menor (M1: 0.067 vs 0.071; M2: 0.062 vs 0.065). Ninguna
+    # conclusion cambia, ambas quedan bajo 0.08; se adoptan los valores estandar.
+    tri = np.triu_indices(len(obs), 1)
     srmr = float(np.sqrt(np.mean(Rres[tri] ** 2)))
     chi2, gl = float(st["chi2"]), float(st["DoF"])
     nn = len(data)
 
     # IC 90 % del RMSEA (método del parámetro de no centralidad)
     def lam(target):
-        lo, hi = 0.0, max(10 * chi2, 100)
+        # Cota superior por la formula del limite superior real del IC; con la anterior
+        # (10*chi2) un modelo bien ajustado y muchos gl truncaría rmsea_hi en silencio.
+        lo, hi = 0.0, (np.sqrt(chi2) + 1.645 * np.sqrt(2 * gl)) ** 2 + 1.0
         if stats.ncx2.cdf(chi2, gl, 1e-9) < target:
             return 0.0
         for _ in range(200):
@@ -382,7 +450,9 @@ def ajustar_afc(desc_modelo, data):
               "TLI": round(float(st["TLI"]), 3), "RMSEA": round(float(st["RMSEA"]), 3),
               "RMSEA_IC90": [round(rmsea_lo, 3), round(rmsea_hi, 3)],
               "SRMR": round(srmr, 3)}
-    # Modelo nulo (independencia): su RMSEA indica cuánto margen tienen CFI/TLI (Kenny, s. f.)
+    # Modelo nulo (independencia): su RMSEA indica cuánto margen tienen CFI/TLI.
+    # El argumento se sustenta en Kenny (s. f.); si se cita en el informe, debe
+    # incorporarse a la lista de Referencias (AUDITORIA M7: cita colgante).
     R_ = data[obs].corr().values
     pp = len(obs)
     chi2_nulo = (nn - 1) * (-np.log(np.linalg.det(R_)))
@@ -433,7 +503,10 @@ tri = np.triu_indices(len(res_m1), 1)
 pares = pd.DataFrame({"item_1": res_m1.index[tri[0]], "item_2": res_m1.columns[tri[1]],
                       "residuo": res_m1.values[tri]})
 pares["abs"] = pares["residuo"].abs()
-top_res = pares.sort_values("abs", ascending=False).head(10).drop(columns="abs")
+# AUDITORIA m3: quicksort no es estable; un empate cambiaria que par recibe la covarianza
+# de errores y, en cascada, todo el ajuste de M2. mergesort garantiza el orden.
+top_res = (pares.sort_values("abs", ascending=False, kind="mergesort")
+           .head(10).drop(columns="abs"))
 guardar(top_res.round(3).reset_index(drop=True), "12_residuos_M1.csv")
 
 # 3.2 Modelo M2 (ajustado). Re-especificaciones, cada una con justificación teórica:
@@ -455,10 +528,20 @@ for _, r in cargas_m1.iterrows():
         else:
             cambios.append(f"Se conserva '{etiqueta[it]}' (carga M1 = {lam_:.2f}) para mantener "
                            f"3 indicadores en '{NOMBRE_FACTOR[f]}'")
-a_, b_ = top_res.iloc[0]["item_1"], top_res.iloc[0]["item_2"]
+# AUDITORIA M4: se eligen los dos items con mayor residuo de correccion, pero solo si
+# pertenecen a factores DISTINTOS y ambos sobreviven a M2. Sin esas dos comprobaciones el
+# parametro seria no identificable (mismo factor) o haria fallar el ajuste (item eliminado).
+factor_de = {it: f for f, its in modelo_m2.items() for it in its}
+candidatos = [r for _, r in top_res.iterrows()
+              if factor_de.get(r["item_1"]) != factor_de.get(r["item_2"])
+              and r["item_1"] in factor_de and r["item_2"] in factor_de]
+if not candidatos:
+    raise SystemExit("No hay ningun par de items de factores distintos que reciba la "
+                     "covarianza de errores; revisar los residuos de M1.")
+a_, b_ = candidatos[0]["item_1"], candidatos[0]["item_2"]
 extra = f"{b_} ~~ {a_}"
 cambios.append(f"Covarianza de errores {etiqueta[b_]} ~~ {etiqueta[a_]} "
-               f"(residuo M1 = {top_res.iloc[0]['residuo']:.2f})")
+               f"(residuo M1 = {candidatos[0]['residuo']:.3f})")
 desc_m2 = sintaxis(modelo_m2, extra)
 with open(os.path.join(OUT, "modelo_M2.txt"), "w", encoding="utf-8") as fh:
     fh.write(desc_m2)
@@ -483,6 +566,34 @@ r_gen = Xr[items_m2].corrwith(genero).round(3)
 guardar(pd.DataFrame({"item": [etiqueta[i] for i in r_gen.index], "r_hombre": r_gen.values},
                      index=r_gen.index).sort_values("r_hombre"), "19_correlacion_genero.csv")
 resumen["genero_n_validos"] = int(genero.notna().sum())
+
+# ---------------------------------------------------------------------------
+# 3.4 AUDITORIA C1: validacion cruzada del AFC en las dos mitades.
+# La replica en mitades anterior solo reestimaba el AFE (congruencia de Tucker), de modo
+# que no aportaba ninguna evidencia sobre el ajuste del AFC. Aqui se ajusta el modelo M2
+# por separado en cada mitad y se comparan sus indices con los de la muestra completa.
+# ---------------------------------------------------------------------------
+val_cruzada = []
+for nombre, h in zip(("Mitad 1", "Mitad 2"), mitades):
+    try:
+        _, aj_h, _ = ajustar_afc(desc_m2, h[items_m2])
+        val_cruzada.append(dict(muestra=nombre, items=len(items_m2), n=len(h), **aj_h))
+    except Exception as exc:                       # noqa: BLE001
+        val_cruzada.append(dict(muestra=nombre, items=len(items_m2), n=len(h),
+                                error=f"{type(exc).__name__}: {exc}"))
+# El IC del RMSEA sale como lista de np.float64 y se volcaba al CSV como el repr
+# "[np.float64(0.058), np.float64(0.074)]"; se convierten a float nativo.
+for r in val_cruzada:
+    if isinstance(r.get("RMSEA_IC90"), (list, tuple)):
+        r["RMSEA_IC90"] = [round(float(x), 3) for x in r["RMSEA_IC90"]]
+guardar(pd.DataFrame([dict(muestra="Muestra completa", items=len(items_m2), n=n,
+                           **{k: v for k, v in ajuste_m2.items() if k != "RMSEA_IC90"})]
+                      + [{k: v for k, v in r.items()} for r in val_cruzada])
+        .set_index("muestra"), "22_validacion_cruzada_mitades.csv")
+resumen["validacion_cruzada"] = val_cruzada
+print("\nValidacion cruzada del AFC en dos mitades:")
+for r in val_cruzada:
+    print("  ", r)
 
 # Fiabilidad final (alfa) junto con CR y AVE del modelo M2
 fiab_m2 = val_m2.copy()
@@ -518,8 +629,11 @@ if extra:
     xa, xb = pos_item[a_], pos_item[b_]
     ax.annotate("", xy=(xa, 0.11), xytext=(xb, 0.11),
                 arrowprops=dict(arrowstyle="<->", connectionstyle="arc3,rad=0.25", color="grey", lw=0.8))
-    r_ = float(errcov_m2["Est. Std"].iloc[0])
-    ax.text((xa + xb) / 2, 0.035, f"r(e) = {r_:.2f}", ha="center", fontsize=6, color="grey")
+    _par = errcov_m2[((errcov_m2["lval"] == a_) & (errcov_m2["rval"] == b_)) |
+                 ((errcov_m2["lval"] == b_) & (errcov_m2["rval"] == a_))]
+    if len(_par):
+        r_ = float(_par["Est. Std"].iloc[0])
+        ax.text((xa + xb) / 2, 0.035, f"r(e) = {r_:.2f}", ha="center", fontsize=6, color="grey")
 ax.set_xlim(-0.01, 1.03)
 ax.set_ylim(-0.06, 0.92)
 # (Sin título interno: en APA el título va sobre la figura, en el informe)

@@ -9,6 +9,7 @@ Actividad sumativa de la Unidad 2 del módulo **Inferencia Avanzada y Análisis 
 | Archivo / carpeta | Qué es |
 |---|---|
 | `informe.md` | El informe técnico (texto editable). Usa las figuras de `resultados/`. |
+| `AUDITORIA.md` | Auditoría del proyecto: hallazgos, verificación numérica y correcciones aplicadas. |
 | `analisis_factorial.py` | Todo el análisis: KMO, Bartlett, análisis paralelo, AFE, AFC, fiabilidad y validez. Genera `resultados/`. |
 | `generar_pdf_apa.py` | Convierte `informe.md` en `Informe_APA.pdf` con formato APA 7. |
 | `datos/` | `responses.csv` (datos) y `columns.csv` (diccionario de variables) de Kaggle. |
