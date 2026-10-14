@@ -1,0 +1,6 @@
+ArteCultura =~ LecturaPoesia + Arte + AireLibre + Instrumentos + EscrituraPoesia + Teatro
+CienciasVida =~ Biologia + Quimica + Medicina
+CienciasExactas =~ Matematicas + Fisica + PC
+CienciasSociales =~ Historia + Politica + Derecho
+DeporteRiesgo =~ Autos + DeporteCompetitivo + Adrenalina
+Consumo =~ Celebridades + Compras

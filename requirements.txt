@@ -1,0 +1,10 @@
+pandas
+numpy
+scipy
+matplotlib
+scikit-learn
+factor_analyzer
+semopy
+reportlab
+markdown-it-py
+pillow

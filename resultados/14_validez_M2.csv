@@ -1,0 +1,7 @@
+﻿factor,n_items,CR,AVE,raiz_AVE,max_corr,Fornell_Larcker
+ArteCultura,4,0.726,0.407,0.638,0.271,Cumple
+CienciasVida,3,0.864,0.679,0.824,0.275,Cumple
+CienciasExactas,3,0.706,0.476,0.69,0.321,Cumple
+CienciasSociales,3,0.668,0.406,0.637,0.282,Cumple
+DeporteRiesgo,3,0.56,0.299,0.546,0.321,Cumple
+Consumo,2,0.675,0.52,0.721,0.312,Cumple

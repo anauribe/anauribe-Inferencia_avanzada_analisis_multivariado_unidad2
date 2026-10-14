@@ -1,0 +1,33 @@
+﻿,item,factor,carga_principal,carga_cruzada_max,h2,decision
+Historia,Historia,Ciencias sociales y humanidades,0.53,0.21,0.38,Se retiene
+Psicologia,Psicología,Arte y cultura,0.29,0.25,0.17,Se elimina
+Politica,Política,Ciencias sociales y humanidades,0.74,0.08,0.56,Se retiene
+Matematicas,Matemáticas,Ciencias exactas y tecnología,0.87,0.21,0.86,Se retiene
+Fisica,Física,Ciencias exactas y tecnología,0.79,0.23,0.75,Se retiene
+Internet,Internet,Ciencias exactas y tecnología,0.28,0.17,0.15,Se elimina
+PC,Computación (software/hardware),Ciencias exactas y tecnología,0.43,0.28,0.28,Se retiene
+Economia,Economía y gestión,Ciencias sociales y humanidades,0.36,0.29,0.31,Se elimina
+Biologia,Biología,Ciencias de la vida,0.94,0.1,0.9,Se retiene
+Quimica,Química,Ciencias de la vida,0.86,0.18,0.8,Se retiene
+LecturaPoesia,Lectura de poesía,Arte y cultura,0.55,0.34,0.44,Se retiene
+Geografia,Geografía,Ciencias sociales y humanidades,0.34,0.21,0.19,Se elimina
+Idiomas,Idiomas extranjeros,Arte y cultura,0.29,0.25,0.18,Se elimina
+Medicina,Medicina,Ciencias de la vida,0.86,0.13,0.77,Se retiene
+Derecho,Derecho,Ciencias sociales y humanidades,0.67,0.19,0.51,Se retiene
+Autos,Autos,Deporte y riesgo,0.53,0.25,0.38,Se retiene
+Arte,Arte (exposiciones),Arte y cultura,0.75,0.1,0.59,Se retiene
+Religion,Religión,Arte y cultura,0.32,0.15,0.16,Se elimina
+AireLibre,Actividades al aire libre,Arte y cultura,0.43,0.24,0.26,Se retiene
+Baile,Baile,Arte y cultura,0.35,0.28,0.21,Se elimina
+Instrumentos,Tocar instrumentos musicales,Arte y cultura,0.51,0.11,0.3,Se retiene
+EscrituraPoesia,Escritura de poesía,Arte y cultura,0.54,0.11,0.32,Se retiene
+DeporteOcio,Deporte recreativo,Deporte y riesgo,0.34,0.07,0.12,Se elimina
+DeporteCompetitivo,Deporte competitivo,Deporte y riesgo,0.52,0.08,0.29,Se retiene
+Jardineria,Jardinería,Arte y cultura,0.23,0.19,0.12,Se elimina
+Celebridades,Vida de celebridades,Consumo y estilo de vida,0.62,0.09,0.4,Se retiene
+Compras,Compras,Consumo y estilo de vida,0.73,0.06,0.54,Se retiene
+CienciaTec,Ciencia y tecnología,Ciencias exactas y tecnología,0.31,0.3,0.25,Se elimina
+Teatro,Teatro,Arte y cultura,0.72,0.12,0.55,Se retiene
+Amigos,Socializar con amigos,Deporte y riesgo,0.26,0.18,0.14,Se elimina
+Adrenalina,Deportes de adrenalina,Deporte y riesgo,0.63,0.08,0.41,Se retiene
+Mascotas,Mascotas,Consumo y estilo de vida,0.21,0.15,0.08,Se elimina

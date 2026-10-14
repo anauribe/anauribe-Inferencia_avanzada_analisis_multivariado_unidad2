@@ -1,0 +1,182 @@
+{
+  "datos": {
+    "n_total": 1010,
+    "n_completos": 886,
+    "n_excluidos": 124,
+    "n_items": 32
+  },
+  "mardia": {
+    "asimetria_b1p": 62.27,
+    "curtosis_b2p": 1131.66,
+    "curtosis_esperada": 1088,
+    "z_curtosis": 13.93,
+    "p_curtosis": 0.0
+  },
+  "factibilidad": {
+    "kmo": 0.762,
+    "bartlett_chi2": 7395.32,
+    "bartlett_gl": 496,
+    "bartlett_p": 0.0,
+    "det_R": 0.00021044065270065874
+  },
+  "n_factores": {
+    "kaiser": 10,
+    "paralelo": 6,
+    "autovalores": [
+      4.175,
+      3.265,
+      2.574,
+      2.143,
+      1.599,
+      1.403,
+      1.144,
+      1.115,
+      1.089,
+      1.013
+    ],
+    "paralelo_p95": [
+      1.423,
+      1.356,
+      1.318,
+      1.284,
+      1.254,
+      1.227,
+      1.201,
+      1.178,
+      1.154,
+      1.131
+    ]
+  },
+  "comparacion_k": [
+    {
+      "k": 5,
+      "var_acumulada_%": 34.7,
+      "items_carga_>=.40": 21
+    },
+    {
+      "k": 6,
+      "var_acumulada_%": 38.6,
+      "items_carga_>=.40": 20
+    },
+    {
+      "k": 7,
+      "var_acumulada_%": 41.7,
+      "items_carga_>=.40": 22
+    }
+  ],
+  "afe_inicial": {
+    "var_acumulada_%": 38.6
+  },
+  "depuracion": {
+    "retenidos": 20,
+    "eliminados": [
+      "Psicología",
+      "Internet",
+      "Economía y gestión",
+      "Geografía",
+      "Idiomas extranjeros",
+      "Religión",
+      "Baile",
+      "Deporte recreativo",
+      "Jardinería",
+      "Ciencia y tecnología",
+      "Socializar con amigos",
+      "Mascotas"
+    ]
+  },
+  "afe_final": {
+    "n_items": 20,
+    "kmo": 0.726,
+    "var_acumulada_%": 46.4
+  },
+  "modelo_medicion": {
+    "ArteCultura": [
+      "LecturaPoesia",
+      "Arte",
+      "AireLibre",
+      "Instrumentos",
+      "EscrituraPoesia",
+      "Teatro"
+    ],
+    "CienciasVida": [
+      "Biologia",
+      "Quimica",
+      "Medicina"
+    ],
+    "CienciasExactas": [
+      "Matematicas",
+      "Fisica",
+      "PC"
+    ],
+    "CienciasSociales": [
+      "Historia",
+      "Politica",
+      "Derecho"
+    ],
+    "DeporteRiesgo": [
+      "Autos",
+      "DeporteCompetitivo",
+      "Adrenalina"
+    ],
+    "Consumo": [
+      "Celebridades",
+      "Compras"
+    ]
+  },
+  "congruencia_mitades": {
+    "ArteCultura": 0.976,
+    "CienciasVida": 0.977,
+    "CienciasExactas": 0.908,
+    "CienciasSociales": 0.96,
+    "DeporteRiesgo": 0.834,
+    "Consumo": 0.889
+  },
+  "afc_M1": {
+    "chi2": 823.97,
+    "gl": 155,
+    "p": 0.0,
+    "chi2_gl": 5.32,
+    "CFI": 0.851,
+    "TLI": 0.817,
+    "RMSEA": 0.07,
+    "RMSEA_IC90": [
+      0.065,
+      0.075
+    ],
+    "SRMR": 0.067,
+    "RMSEA_nulo": 0.163,
+    "r_media_abs": 0.128
+  },
+  "afc_M2": {
+    "chi2": 581.29,
+    "gl": 119,
+    "p": 0.0,
+    "chi2_gl": 4.88,
+    "CFI": 0.89,
+    "TLI": 0.858,
+    "RMSEA": 0.066,
+    "RMSEA_IC90": [
+      0.061,
+      0.072
+    ],
+    "SRMR": 0.062,
+    "RMSEA_nulo": 0.176,
+    "r_media_abs": 0.134
+  },
+  "afc_M2_cambios": [
+    "Se elimina 'Actividades al aire libre' (carga M1 = 0.29)",
+    "Se elimina 'Tocar instrumentos musicales' (carga M1 = 0.37)",
+    "Se conserva 'Computación (software/hardware)' (carga M1 = 0.39) para mantener 3 indicadores en 'Ciencias exactas y tecnología'",
+    "Covarianza de errores Computación (software/hardware) ~~ Autos (residuo M1 = 0.30)"
+  ],
+  "afc_M2_covarianza_errores": [
+    {
+      "lval": "PC",
+      "rval": "Autos",
+      "Estimate": 0.45,
+      "Est. Std": 0.246,
+      "p-value": 4.440892098500626e-16
+    }
+  ],
+  "genero_n_validos": 883
+}

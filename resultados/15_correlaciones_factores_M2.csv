@@ -1,0 +1,7 @@
+﻿,ArteCultura,CienciasVida,CienciasExactas,CienciasSociales,DeporteRiesgo,Consumo
+ArteCultura,1.0,0.248,-0.016,0.271,-0.178,0.207
+CienciasVida,0.248,1.0,0.275,-0.013,0.053,0.062
+CienciasExactas,-0.016,0.275,1.0,0.149,0.321,-0.312
+CienciasSociales,0.271,-0.013,0.149,1.0,0.282,-0.019
+DeporteRiesgo,-0.178,0.053,0.321,0.282,1.0,0.015
+Consumo,0.207,0.062,-0.312,-0.019,0.015,1.0
